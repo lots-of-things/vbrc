@@ -1,0 +1,23 @@
+{
+  "name": "vbrc",
+  "version": "1.0.0",
+  "description": "virtual black rock city",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TVScoundrel/mmo-phaser-es6.git"
+  },
+  "author": "Johann260",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TVScoundrel/mmo-phaser-es6/issues"
+  },
+  "homepage": "https://github.com/TVScoundrel/mmo-phaser-es6#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
