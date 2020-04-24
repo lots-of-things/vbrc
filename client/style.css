@@ -53,3 +53,14 @@ body.connected #players{
 .connected #login{
 	display: none;
 }
+
+#live_msg{
+	display: none;
+}
+.connected #live_msg{
+	display: block;
+	position: fixed;
+	top: calc(50% + 2.5em);
+	left: 50%;
+	transform: translateX(-50%);
+}

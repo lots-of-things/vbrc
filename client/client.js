@@ -16,6 +16,8 @@ function login(){
 		msg:document.getElementById('msg').value,
 	};
 
+	document.getElementById('live_msg').value=self.msg;
+
 	socket=io();
 
 	socket.on('init',(data)=>{
@@ -59,11 +61,20 @@ function login(){
 	so this only send when we are finished moving
 	*/
 	document.body.addEventListener('keyup',send);
+
+	document.body.addEventListener('mouseup',(evt)=>{
+		let center_x=document.body.clientWidth/2;
+		let center_y=document.body.clientHeight/2;
+		self.x+=(evt.clientX-center_x)/10;
+		self.y+=(evt.clientY-center_y)/10;
+		updatePlayer(self);
+	});
 }
 
 function updatePlayer(p){
 	let elem=document.getElementById('player_'+p.id);
 	if(elem===null){
+		// this player has to be created
 		elem=document.createElement('div');
 		elem.id='player_'+p.id;
 		elem.classList.add('player');
@@ -76,6 +87,13 @@ function updatePlayer(p){
 		let msg=document.createElement('span');
 		msg.classList.add('msg');
 		elem.appendChild(msg);
+
+		if(p.id==self.id){
+			elem.addEventListener('mouseup',(evt)=>{
+				// block mouse handler if player clicks on his icon/textbox
+				evt.stopPropagation();
+			});
+		}
 	}
 	if(typeof p.x!='undefined'){
 		// there is new position data
@@ -96,4 +114,9 @@ function updatePlayer(p){
 		document.body.style.setProperty('--bg-x',self.x);
 		document.body.style.setProperty('--bg-y',self.y);
 	}
+}
+
+function updateMsg(){
+	self.msg=document.getElementById('live_msg').value;
+	send();
 }
