@@ -26,12 +26,12 @@ let game={
 
 function start_timeout(socket){
 	socket.timeout=setTimeout(()=>{
-		socket.emit('ping',null);
+		socket.emit('ping');
 		socket.timeout=setTimeout(()=>{
 			// not responding, disconnect
 			socket.disconnect(true);
 		},10000);
-	},1400);
+	},3000);
 }
 
 function stop_timeout(socket){
