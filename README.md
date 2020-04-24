@@ -12,10 +12,10 @@ There are these messages to the client:
 * `init`: contains the player id the particular player has. Will only be sent once at connection initialisation. The player should then send his starting data.
 * `ping`: this message indicates that the server expects a message in the next 10 s, otherwise the client will be disconnected
 * `player`: contains player data
-  * `id`: the id of the player
-  * `x`, `y`: the location of the player
-  * `name`: the name of the player
-  * `msg`: the current message of the player
+  * `id`: the id of the player (number)
+  * `x`, `y`: the location of the player (number)
+  * `name`: the name of the player (text)
+  * `msg`: the current message of the player (text)
 * `remove`: contains a player id which has disconnected. The player should not be shown any longer
 
 There are these messages to the server:
