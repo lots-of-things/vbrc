@@ -15,13 +15,9 @@
 			html,body{
 				width: 100%;
 				height: 100%;
+				overflow: hidden;
 			}
-			body::after{
-				content: 'connecting...';
-			}
-			body.connected::after{
-				display: none;
-			}
+
 			body.connected #players{
 				width: 100%;
 				height: 100%;
@@ -30,32 +26,86 @@
 				background-position: calc(var(--bg-x) * 1%) calc(var(--bg-y) * 1%);
 			}
 			#players>.player{
-				width: 0;
-				height: 0;
-				border-radius: 50%;
-				border: 10px solid black;
-				background-color: black;
 				position: relative;
+				white-space: nowrap;
 			}
 			#players>.player>.name{
-				position: absolute;
-				top: -12px;
+				display:inline;
 				transform: translateX(-50%);
+				border: 5px solid black;
+				background-color: white;
+				padding: 3px;
+				border-radius: 5px;
 			}
 			#players>.player>.msg{
 				position: absolute;
 				top: 12px;
 				transform: translateX(-50%);
 			}
+
+			#login{
+				display: flex;
+				width: 50%;
+				margin: auto;
+				margin-top: 3em;
+				flex-direction: column;
+			}
+			.connected #login{
+				display: none;
+			}
 		</style>
 	</head>
 	<body>
+		<div id="login">
+			<h1>Virtual Black Rock City</h1>
+			<label for="name">display name:</label>
+			<input type="text" id="name"/>
+			<label for="msg">initial message (can be changed later):</label><br>
+			<input type="text" id="msg"/>
+			<button type="button" onclick="login()">start</button>
+			<h4>instructions:</h4>
+			<p>
+				arrow keys to move
+			</p>
+		</div>
 		<div id="players"></div>
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			let self=false;
-			let socket=io();
-			
+			let socket=false;
+
+			function send(){
+				if(self!==false){
+					// send all player data
+					socket.emit('player',self);
+				}
+			}
+
+			function login(){
+				self={
+					x:50,
+					y:70,
+					name:document.getElementById('name').value,
+					msg:document.getElementById('msg').value,
+				};
+
+				socket=io();
+
+				socket.on('init',(data)=>{
+					self.id=data;
+					console.info('self',self);
+					document.body.classList.add('connected');
+					send();
+				});
+
+				socket.on('ping',send);
+				socket.on('player',updatePlayer);
+
+				socket.on('remove',(id)=>{
+					document.getElementById('player_'+id).remove();
+				});
+			}
+
 			function updatePlayer(p){
 				let elem=document.getElementById('player_'+p.id);
 				if(elem===null){
@@ -64,11 +114,11 @@
 					elem.classList.add('player');
 					document.getElementById('players').appendChild(elem);
 
-					let name=document.createElement('div');
+					let name=document.createElement('span');
 					name.classList.add('name');
 					elem.appendChild(name);
-					
-					let msg=document.createElement('div');
+
+					let msg=document.createElement('span');
 					msg.classList.add('msg');
 					elem.appendChild(msg);
 				}
@@ -85,31 +135,40 @@
 					// there is a new message
 					elem.querySelector('.msg').innerText=p.msg;
 				}
-				
+
 				if(p.id==self.id){
 					// own player moved, update viewport
+					document.body.style.setProperty('--bg-x',self.x);
+					document.body.style.setProperty('--bg-y',self.y);
 					// TODO update viewport
 				}
 			}
 			
-			socket.on('init',(data)=>{
-				self.id=data.self;
-				console.info('self',self);
-				data.players.forEach(updatePlayer);
-				document.body.classList.add('connected');
-				requestAnimationFrame(adjust_bg);
+			// this catches automatic key repeats
+			document.body.addEventListener('keydown',(evt)=>{
+				switch(evt.key){
+					case 'ArrowRight':
+						self.x++;
+						break;
+					case 'ArrowLeft':
+						self.x--;
+						break;
+					case 'ArrowDown':
+						self.y++;
+						break;
+					case 'ArrowUp':
+						self.y--;
+						break;
+				}
+				// to reduce lag on own player
+				updatePlayer(self);
 			});
 			
-			socket.on('ping',()=>{
-				// send all player data
-				socket.emit('player',self);
-			});
-
-			socket.on('player',updatePlayer);
-			
-			socket.on('remove',(id)=>{
-				document.getElementById('player_'+id).remove();
-			});
+			/*
+			keyup does not catch automatic key repeats
+			so this only send when we are finished moving
+			*/
+			document.body.addEventListener('keyup',send);
 		</script>
 	</body>
 </html>
