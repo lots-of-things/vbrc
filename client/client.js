@@ -10,8 +10,8 @@ function send(){
 
 function login(){
 	self={
-		x:50,
-		y:70,
+		x:175,
+		y:320,
 		name:document.getElementById('name').value,
 		msg:document.getElementById('msg').value,
 	};
@@ -22,6 +22,7 @@ function login(){
 		self.id=data;
 		console.info('self',self);
 		document.body.classList.add('connected');
+		// announce to other players
 		send();
 	});
 
