@@ -25,17 +25,7 @@ let game={
 };
 
 game.io.on('connection',(socket)=>{
-	let new_player={
-		id:game.lastPlayerId++,
-		// just choose a place near-ish to the center
-		x:rand(-10,10),
-		y:rand(-10,10),
-		name:"",
-		msg:"hi"
-	};
-	socket.player_id=new_player.id;
-	// announce new player
-	socket.broadcast.emit('player',new_player);
+	socket.player_id=game.lastPlayerId++;
 	// disconnection handler
 	socket.on('disconnect',()=>{
 		game.io.emit('remove',socket.player_id);
@@ -51,10 +41,14 @@ game.io.on('connection',(socket)=>{
 		// reset timeout
 		socket.timeout=setTimeout(()=>{
 			socket.emit('ping',null);
+			socket.timeout=setTimeout(()=>{
+				// not responding, disconnect
+				socket.disconnect(true);
+			},10000);
 		},1400);
 	});
 	// initialise with own player id
-	socket.emit('init',socket.player.id);
+	socket.emit('init',socket.player_id);
 	// set timeout
 	socket.timeout=setTimeout(()=>{
 		socket.emit('ping',null);
