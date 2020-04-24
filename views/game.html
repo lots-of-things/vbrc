@@ -1,6 +1,22 @@
 <div ng-controller="tic as t" id="parent" >
-    <img style="position:fixed;top: 0;left: 0" width="20000" id="brcmap" src="brc.svg">
-    <h4 class="white" style="text-align: center;position: fixed;top: 50%;left: 50%;margin-top:-25px;margin-left:-25px;">{{t.user.displayName}}<br/><img src="{{t.user.photoURL}}" alt="loading" class="img-circle image"><br/><input type="text" id="message" name="fname" width="40px" value=""></h4>
+    <div style="position:fixed; top: 10px; left: 10px; z-index: 3;"><span>your message: </span><input type="text" id="message" name="fname" width="40px" value="{{t.leaderboard.msg}}" ></div>
+    <div style="position:fixed; top: 40px; left: 10px; z-index: 3;" ng-if="t.night">
+      <input type="checkbox" id="leds" name="leds">
+      <label for="leds">LEDs</label>
+    </div>
+    <img style="position:fixed;top: 0;left: 0;" width="20000" id="brcmap" src="brc.svg">
+    <img style="position:fixed;top: 0;left: 0; z-index: 2; opacity: 0;" width="20000" id="whiteout" src="whiteout.png">
+
+    <h4 class="{{t.leaderboard.dark}}" style="text-align: center;position: fixed;top: 50%;left: 50%;margin-top:-25px;margin-left:-25px;">{{t.leaderboard.displayName}}<br/>
+        <svg height="100" width="100" ng-if="!t.night||t.leaderboard.dark=='led'">
+          <circle cx="50" cy="50" r="40" stroke="{{t.leaderboard.photoURL}}" stroke-width="3" fill="{{t.leaderboard.photoURL}}" />
+        </svg>
+        <svg height="100" width="100" ng-if="t.night&&t.leaderboard.dark=='dark'">
+          <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="black" />
+        </svg>
+        <br/>
+        <span style="border-color: black; border-style: solid; border-width:thin;padding:0 2px;width:20px;">{{t.leaderboard.msg}}</span>
+    </h4>
 </div>
 
 
