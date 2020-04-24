@@ -24,6 +24,20 @@ let game={
 	io:require('socket.io')(server)
 };
 
+function start_timeout(socket){
+	socket.timeout=setTimeout(()=>{
+		socket.emit('ping',null);
+		socket.timeout=setTimeout(()=>{
+			// not responding, disconnect
+			socket.disconnect(true);
+		},10000);
+	},1400);
+}
+
+function stop_timeout(socket){
+	clearTimeout(socket.timeout);
+}
+
 game.io.on('connection',(socket)=>{
 	socket.player_id=game.lastPlayerId++;
 	// disconnection handler
@@ -32,25 +46,16 @@ game.io.on('connection',(socket)=>{
 	});
 	// this handles any update on the player side. The player decides what information should be passed on.
 	socket.on('player',(data)=>{
-		// stop timeout
-		clearTimeout(socket.timeout);
+		stop_timeout(socket);
 		// make sure the player id is correct
 		data.id=socket.player_id;
 		// anything else is just forwarded
 		game.io.emit('player',data);
 		// reset timeout
-		socket.timeout=setTimeout(()=>{
-			socket.emit('ping',null);
-			socket.timeout=setTimeout(()=>{
-				// not responding, disconnect
-				socket.disconnect(true);
-			},10000);
-		},1400);
+		start_timeout(socket);
 	});
 	// initialise with own player id
 	socket.emit('init',socket.player_id);
-	// set timeout
-	socket.timeout=setTimeout(()=>{
-		socket.emit('ping',null);
-	},1400);
+
+	start_timeout(socket);
 });

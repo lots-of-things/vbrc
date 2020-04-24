@@ -9,13 +9,14 @@ The only datapoint which is checked is the player id. Everything else is forward
 
 There are these messages to the client:
 
-* `init`: will only contain the player id the particular player has. Will only be sent once at connection initialisation
+* `init`: contains the player id the particular player has. Will only be sent once at connection initialisation
 * `ping`: this message indicates that the server expects a message in the next 10 s, otherwise the client will be disconnected
 * `player`: contains player data
   * `id`: the id of the player
   * `x`, `y`: the location of the player
   * `name`: the name of the player
   * `msg`: the current message of the player
+* `remove`: contains a player id which has disconnected. The player should not be shown any longer
 
 There are these messages to the server:
 * `player`: contains own data, see above
