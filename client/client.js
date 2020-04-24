@@ -51,8 +51,8 @@ function updatePlayer(p){
 	}
 	if(typeof p.x!='undefined'){
 		// there is new position data
-		elem.style.left=(p.x-self.x+50)+"%";
-		elem.style.top=(p.y-self.y+50)+"%";
+		elem.style.setProperty('--x',p.x);
+		elem.style.setProperty('--y',p.y);
 	}
 	if(typeof p.name!='undefined'){
 		// there is a new name

@@ -2,6 +2,13 @@
 	margin:0;
 	padding:0;
 }
+:root{
+	/* default values for CSS variables */
+	--x:0;
+	--y:0;
+	--bg-x: 50;
+	--bg-y: 70;
+}
 html,body{
 	width: 100%;
 	height: 100%;
@@ -13,24 +20,26 @@ body.connected #players{
 	height: 100%;
 	background: url(/assets/brc.svg) no-repeat center;
 	background-size: 400%;
-	background-position: calc(var(--bg-x,50) * 1%) calc(var(--bg-y,70) * 1%);
+	background-position: calc(var(--bg-x) * 1%) calc(var(--bg-y) * 1%);
 }
 #players>.player{
-	position: relative;
-	white-space: nowrap;
+	position: absolute;
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	/*
+	center the player on the x location
+	player is not centered on y because then the players name might not be visible
+	*/
+	transform: translateX(-50%);
+	top: calc((var(--y) - var(--bg-y)) * 4% + 50%);
+	left:calc((var(--x) - var(--bg-x)) * 4% + 50%);
 }
 #players>.player>.name{
-	display:inline;
-	transform: translateX(-50%);
 	border: 5px solid black;
 	background-color: white;
 	padding: 3px;
 	border-radius: 5px;
-}
-#players>.player>.msg{
-	position: absolute;
-	top: 12px;
-	transform: translateX(-50%);
 }
 
 #login{
