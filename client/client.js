@@ -32,6 +32,33 @@ function login(){
 	socket.on('remove',(id)=>{
 		document.getElementById('player_'+id).remove();
 	});
+	
+	// setup key handlers
+	// this catches automatic key repeats
+	document.body.addEventListener('keydown',(evt)=>{
+		switch(evt.key){
+			case 'ArrowRight':
+				self.x++;
+				break;
+			case 'ArrowLeft':
+				self.x--;
+				break;
+			case 'ArrowDown':
+				self.y++;
+				break;
+			case 'ArrowUp':
+				self.y--;
+				break;
+		}
+		// to reduce lag on own player
+		updatePlayer(self);
+	});
+
+	/*
+	keyup does not catch automatic key repeats
+	so this only send when we are finished moving
+	*/
+	document.body.addEventListener('keyup',send);
 }
 
 function updatePlayer(p){
@@ -70,29 +97,3 @@ function updatePlayer(p){
 		document.body.style.setProperty('--bg-y',self.y);
 	}
 }
-
-// this catches automatic key repeats
-document.body.addEventListener('keydown',(evt)=>{
-	switch(evt.key){
-		case 'ArrowRight':
-			self.x++;
-			break;
-		case 'ArrowLeft':
-			self.x--;
-			break;
-		case 'ArrowDown':
-			self.y++;
-			break;
-		case 'ArrowUp':
-			self.y--;
-			break;
-	}
-	// to reduce lag on own player
-	updatePlayer(self);
-});
-
-/*
-keyup does not catch automatic key repeats
-so this only send when we are finished moving
-*/
-document.body.addEventListener('keyup',send);
